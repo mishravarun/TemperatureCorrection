@@ -43,24 +43,16 @@ public class SamplingService extends Service implements SensorEventListener {
     private long workT, totalT, workAMT;
     private long total, totalBefore, work, workBefore, workAM, workAMBefore;
     private boolean FIRSTTIMEREAD_FLAG = true;
-    private boolean FIRSTTIMERECORD_FLAG = true;
     private BufferedReader readStream;
    SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyHHmmss");
    
-    protected Context context;
-    String lat;
-    String provider;
-    protected String latitude,longitude; 
-    protected boolean gps_enabled,network_enabled;
     private SensorManager mSensorManager = null;
     private WakeLock mWakeLock = null;
-    int checka=0,checkl=0,checkh=0,checkp=0,checkt=0,checkloc=0;
-    FileWriter writer,writer1,writer2,writer3,writer4,writer5;;
-    public static float accx=0,accy=0,accz=0,light=0,humidity=0,pressure=0,pluggedin=0,phonebat=0,batterypercent=0,rawtemp=0,temp=0,avgtemp=0,avghumidity=0,avgpressure=0,avgtemp1=0,avghumidity1=0,avgpressure1=0;
+    int checkt=0;
+    FileWriter writer4;
+    public static float pluggedin=0,phonebat=0,batterypercent=0,rawtemp=0,temp=0;
     int tempflag=0;
     int count1=0;
-    int checkgps=0;
-    int time=0,avgtime=0;
     String format="";
     /*
      * Register this as a sensor event listener.
