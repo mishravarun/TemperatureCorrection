@@ -25,7 +25,7 @@ public static TextView t,temp1,temp2,humidity1,humidity2,pressure1,pressure2;
         stop = (Button) findViewById(R.id.button2);
         start.setOnClickListener(this);
         stop.setOnClickListener(this);
-        t = (TextView)findViewById(R.id.textView1);
+//        t = (TextView)findViewById(R.id.textView1);
         temp1 = (TextView)findViewById(R.id.textView3);
         temp2 = (TextView)findViewById(R.id.textView4);
         humidity1 = (TextView)findViewById(R.id.textView6);
@@ -39,16 +39,15 @@ public static TextView t,temp1,temp2,humidity1,humidity2,pressure1,pressure2;
         }
         else
         {
-        	t.setText("Idle");
         	start.setEnabled(true);
         }
     }
     public static void refreshdisplay()
     {
 
-    	temp1.setText("Current Temp - " + SamplingService.temp);
-    	humidity1.setText("Raw Temp" + SamplingService.rawtemp);
-    	pressure1.setText("Battery Temp" + SamplingService.phonebat);
+    	temp1.setText("Computed Temp:  " + SamplingService.temp + " deg C");
+    	humidity1.setText("Raw Temp: " + SamplingService.rawtemp+ " deg C");
+    	pressure1.setText("Battery Temp: " + SamplingService.phonebat+ " deg C");
 
     }
     private boolean isMyServiceRunning() {
@@ -82,8 +81,7 @@ public static TextView t,temp1,temp2,humidity1,humidity2,pressure1,pressure2;
 		    case R.id.button2:
 		      Log.d(TAG, "onClick: stopping srvice");
 		      stopService(new Intent(this, SamplingService.class));
-		      t.setText("Idle");
-	        	start.setEnabled(true);
+		    	start.setEnabled(true);
 		      break;
 		    	
 	      

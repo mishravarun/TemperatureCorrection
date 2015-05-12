@@ -21,7 +21,6 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -185,7 +184,8 @@ public class SamplingService extends Service implements SensorEventListener {
     }
     public void writefile()
     {
-    	
+
+        Log.d("MEMOry",memFree.firstElement()+", "+buffers.firstElement()+ ", " + cached.firstElement()+", "+active.firstElement()+", " + inactive.firstElement());
 
     		if(tempflag==1)
     		{
@@ -193,12 +193,11 @@ public class SamplingService extends Service implements SensorEventListener {
     		
     	       if (checkt==0)
     	       {
-    	    	   String line = String.format("%s,%s,%s,%s,%s,%s,%s\n", "Time","CurrentTemperature","RawTemperature","BatteryTemperature","Battery%","PluggedIN","CPU%");
+    	    	   String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", "Time","CurrentTemperature","RawTemperature","BatteryTemperature","Battery%","PluggedIN","CPU%","RAM%");
     	    	   writer4.write(line);
     				checkt=1;
     	       }
-    		          
-    	       String line = String.format("%s,%f,%f,%f,%f,%f,%f\n", format, temp,rawtemp,phonebat,batterypercent,pluggedin,cPUTotalP.firstElement());
+                String line = String.format("%s,%f,%f,%f,%f,%f,%f,%f\n", format, temp,rawtemp,phonebat,batterypercent,pluggedin,cPUTotalP.firstElement(),Integer.parseInt(active.firstElement())/(float)(memTotal));
     	 	  writer4.write(line);
     	       }catch (IOException e) {
     	            e.printStackTrace();
@@ -339,6 +338,7 @@ public class SamplingService extends Service implements SensorEventListener {
                 if ( x.startsWith("Dirty:")) dirty.add(0, x.split("[ ]+", 3)[1]);
                 x = readStream.readLine();
             }
+            Log.d("MMMM",""+Integer.parseInt(active.firstElement())/(float)(memTotal)+", "+Integer.parseInt(memFree.firstElement())/(float)(memTotal));
 
 	    /* We read and calculate the CPU usage percents. It is possible that negative values or values higher than 100% appear.
 	    Get more information about how it is done on http://stackoverflow.com/questions/1420426
