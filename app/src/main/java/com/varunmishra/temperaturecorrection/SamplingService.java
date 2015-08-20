@@ -49,9 +49,9 @@ public class SamplingService extends Service implements SensorEventListener {
     private WakeLock mWakeLock = null;
     int checkt=0;
     FileWriter writer4;
-    public static float pluggedin=0,phonebat=0,batterypercent=0,rawtemp=0,temp=0;
+    public static float pluggedin=0,phonebat=0,batterypercent=0,rawtemp=0,temp=0, light=0,humidity=0,pressure=0;
     int tempflag=0;
-    int count1=0;
+    int count1=0,count2=0,count3=0,count4=0;
     String format="";
     /*
      * Register this as a sensor event listener.
@@ -93,12 +93,24 @@ public class SamplingService extends Service implements SensorEventListener {
 
 
     private void registerListener() {
+        tempflag=1;
 
     		if(mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) !=null){
     		mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE), SensorManager.SENSOR_DELAY_NORMAL);
-    		tempflag=1;
 
     		}
+        if(mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT) !=null){
+            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT), SensorManager.SENSOR_DELAY_NORMAL);
+
+        }
+        if(mSensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY) !=null){
+            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY), SensorManager.SENSOR_DELAY_NORMAL);
+
+        }
+        if(mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) !=null){
+            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE), SensorManager.SENSOR_DELAY_NORMAL);
+
+        }
         this.registerReceiver(this.batteryInfoReceiver,	new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
         File root = Environment.getExternalStorageDirectory();
@@ -164,18 +176,33 @@ public class SamplingService extends Service implements SensorEventListener {
     }
 
     public void onSensorChanged(SensorEvent event) {
-        Log.i(TAG, "onSensorChanged()."+count1);
-        
-        count1++;
+        Log.i(TAG, "onSensorChanged()." + count1 + "-" + count2);
+
+        if(count1==1 && count2==1 && count3==1 && count4==1) writeThread.start();
          format = s.format(new Date());
         if(event.sensor.getType()== Sensor.TYPE_AMBIENT_TEMPERATURE)
-	 {
+	 {count1++;
          temp=event.values[0];
          rawtemp=event.values[1];
-		 if (count1==1) writeThread.start();
-	 }
-	
 
+	 }
+
+        if(event.sensor.getType()== Sensor.TYPE_LIGHT)
+        {count2++;
+            light=event.values[0];
+        }
+
+
+        if(event.sensor.getType()== Sensor.TYPE_RELATIVE_HUMIDITY)
+        {count3++;
+            humidity=event.values[0];
+        }
+
+
+        if(event.sensor.getType()== Sensor.TYPE_PRESSURE)
+        {count4++;
+            pressure=event.values[0];
+        }
 
           TemperatureCorrectionMain.refreshdisplay();
 
@@ -193,11 +220,11 @@ public class SamplingService extends Service implements SensorEventListener {
     		
     	       if (checkt==0)
     	       {
-    	    	   String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", "Time","CurrentTemperature","RawTemperature","BatteryTemperature","Battery%","PluggedIN","CPU%","RAM%");
+    	    	   String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", "Time","CurrentTemperature","RawTemperature","BatteryTemperature","Battery%","PluggedIN","CPU%","RAM%","Light","Humidity","Pressure");
     	    	   writer4.write(line);
     				checkt=1;
     	       }
-                String line = String.format("%s,%f,%f,%f,%f,%f,%f,%f\n", format, temp,rawtemp,phonebat,batterypercent,pluggedin,cPUTotalP.firstElement(),Integer.parseInt(active.firstElement())/(float)(memTotal));
+                String line = String.format("%s,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", format, temp,rawtemp,phonebat,batterypercent,pluggedin,cPUTotalP.firstElement(),Integer.parseInt(active.firstElement())/(float)(memTotal),light,humidity,pressure);
     	 	  writer4.write(line);
     	       }catch (IOException e) {
     	            e.printStackTrace();
